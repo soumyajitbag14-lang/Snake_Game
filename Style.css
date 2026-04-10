@@ -1,0 +1,76 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.body{
+    background: url("Snake.png");
+    min-height: 100vh;
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    
+}
+#board{
+    width: 80vmin;
+    height: 80vmin;
+    position: relative;
+
+    background : linear-gradient(to bottom right , rgb(101, 226, 101) , rgb(158, 158, 87));
+    background-size: cover;
+
+    border: 20px solid transparent; /* base border */
+
+    display: grid;
+    grid-template-rows: repeat(24 , 1fr);
+    grid-template-columns: repeat(24 , 1fr);
+
+}
+#board::before{
+    content: "";
+    position: absolute;
+    inset: -20px; /* same as border width */
+
+    background: url("wooden.png");
+    background-size: 20px 20px;
+    background-repeat: repeat;
+
+    z-index: 1;
+
+    /* CUT OUT CENTER (so only border shows) */
+    mask: 
+        linear-gradient(#000 0 0) content-box, 
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
+
+    padding: 20px; /* same as border */
+}
+
+
+
+.but {
+    height: 30%;
+    position: fixed;
+  display: flex;
+  flex-direction: column; /* column me buttons */
+  gap: 10px;
+  padding: 15px;
+  margin-right: 1400px;
+  
+}
+button{
+    font-size: 25px;
+    color: rgb(0, 0, 0);
+    background-color: rgb(214, 105, 42);
+    border: 2px solid black;
+    border-radius: 14px;
+    transition: 0.7s ease;
+    padding-left: 10px;
+    padding-right: 10px;
+    
+}
+button:hover{
+    transform: scaleX(1.25);
+}
