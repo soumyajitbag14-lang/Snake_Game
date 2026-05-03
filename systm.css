@@ -1,0 +1,57 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.body{
+    background: url("snake\ background\ pic.png");
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    
+}
+#board{
+    
+    background: linear-gradient(rgb(141, 212, 141) , rgb(173, 173, 124));
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+
+.buttons {
+    height: 30%;
+  display: flex;
+  flex-direction: column; /* column me buttons */
+  gap: 10px;
+  padding: 15px;
+  
+  
+}
+button{
+    font-size: 25px;
+    color: rgb(0, 0, 0);
+    background-color: rgb(214, 105, 42);
+    border: 2px solid black;
+    border-radius: 14px;
+    transition: 0.7s ease;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    
+}
+button:hover{
+
+    transform: scaleX(1.25);
+}
+#gamecanvas{
+    border: 4px solid black;
+    height: 600px;
+    width: 600px;
+    background: linear-gradient(rgb(141, 212, 141) , rgb(173, 173, 124));
+    
+
+    
+}
