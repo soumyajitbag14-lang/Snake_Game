@@ -18,11 +18,12 @@ let snake = [
 let dx = 1;
 let dy = 0;
 
+let obstacles = generateObstacles(10); // generate random obstacle
+let food = getValidFoodPosition();   // get food in a valid position
 
-let food = randomPosition();
 
 
-let obstacles = generateObstacles(10);
+
 
 
 let gameRunning = true;
@@ -32,32 +33,37 @@ let gameInterval;
 
 
 function drawGame() {
-    if (!gameRunning) return;
+    if (!gameRunning) return;   
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawGrid();
     moveSnake();
+    checkCollision();           
+
+    drawGrid();
     drawSnake();
     drawFood();
     drawObstacles();
-    drawScore();
-    checkCollision();
-    }
+    drawScore(); // game position
+}
 
 
 function drawGrid() {
     ctx.strokeStyle = "#ddd";
 
-    for (let i = 0; i <= canvas.width; i += gridsize) {
+    
+    for (let x = 0; x <= canvas.width; x += gridsize) {
         ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i, canvas.height);
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
         ctx.stroke();
+    }
 
+    // Horizontal lines
+    for (let y = 0; y <= canvas.height; y += gridsize) {
         ctx.beginPath();
-        ctx.moveTo(0, i);
-        ctx.lineTo(canvas.width, i);
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
         ctx.stroke();
     }
 }
@@ -74,16 +80,37 @@ function moveSnake() {
     // Eat food
     if (head.x === food.x && head.y === food.y) {
         score++;
-        food = randomPosition();
+        food = getValidFoodPosition();
     } else {
         snake.pop();
     }
 }
 
+function getValidFoodPosition() {
+    let newFood;
+    let collision;
+    let attempts = 0;
+
+    do {
+        newFood = randomPosition(); // most probable error
+
+        collision = snake.some(s => s.x === newFood.x && s.y === newFood.y) ||
+                    obstacles.some(o => o.x === newFood.x && o.y === newFood.y);
+
+        attempts++;
+        if (attempts > 1000) break;   
+
+    } while (collision);
+
+    return newFood;
+}
+
+
+
 function drawScore(){
     ctx.fillStyle ="black";
     ctx.font ="20px Arial";
-    ctx.fillTest("Score :"+ score, 10, 25);
+    ctx.fillText("Score: " + score, 10, 25);  
 }
 
 
@@ -127,8 +154,16 @@ function randomPosition() {
 function generateObstacles(count) {
     let obs = [];
 
-    for (let i = 0; i < count; i++) {
-        obs.push(randomPosition());
+    while (obs.length < count) {
+        let pos = randomPosition();
+
+        let collision =
+            snake.some(s => s.x === pos.x && s.y === pos.y) ||
+            obs.some(o => o.x === pos.x && o.y === pos.y);
+
+        if (!collision) {
+            obs.push(pos);
+        }
     }
 
     return obs;
@@ -152,35 +187,43 @@ function drawObstacles() {
 function checkCollision() {
     let head = snake[0];
 
-    
+    // Wall collision
     if (
         head.x < 0 || head.y < 0 ||
         head.x >= tileCount || head.y >= tileCount
     ) {
         gameOver();
+        return;
     }
 
+    // Self collision
     for (let i = 1; i < snake.length; i++) {
         if (head.x === snake[i].x && head.y === snake[i].y) {
             gameOver();
+            return;
         }
     }
 
-    
-    obstacles.forEach(ob => {
+    // Obstacle collision
+    for (let ob of obstacles) {
         if (head.x === ob.x && head.y === ob.y) {
             gameOver();
+            return;
         }
-    });
+    }
 }
 
 
+
 function gameOver() {
+    if (!gameRunning) return;   
+
     gameRunning = false;
     clearInterval(gameInterval);
 
     alert("Game Over!");
 }
+
 
 
 
@@ -207,9 +250,14 @@ document.addEventListener("keydown", e => {
 
 
 
-const buttons = document.querySelectorAll("button");
+const buttons = document.querySelectorAll("button"); // button fixed
 
 buttons[0].onclick = () => {
+    if (gameRunning) {
+        clearInterval(gameInterval);
+    } else {
+        gameInterval = setInterval(drawGame, 150);
+    }
     gameRunning = !gameRunning;
 };
 
